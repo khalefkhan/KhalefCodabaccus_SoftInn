@@ -1,38 +1,46 @@
-﻿namespace TechnicalAssesmentBackendDeveloper;
+﻿using System.Threading.Tasks;
+
+namespace TechnicalAssesmentBackendDeveloper;
 
 class Booking
 {
-    public string guestname;
-    public string roomnumber;
-    public DateTime checkindate;
-    public DateTime checkoutdate;
-    public int totaldays;
-    public double rateperday;
-    public double discount;
-    public double totalamount;
+    public string Guestname { get; private set; } =string.Empty;
+    public string RoomNumber{ get; private set; } =string.Empty;
+    public DateTime CheckinDate {get; private set;}
+    public DateTime CheckoutDate {get; private set;}
+    public int TotalDays{get; private set;}
+    public double RatePerDay{get; private set;}
+    public double Discount{get; private set;}
+    public double TotalAmount{get; private set;}
 
-    public void BookRoom(string name, string room, DateTime checkin, DateTime checkout, double rate, double discountRate)
+    public async Task BookRoom(string name, string room, DateTime checkin, DateTime checkout, double rate, double discountRate)
     {
-        guestname = name;
-        roomnumber = room;
-        checkindate = checkin;
-        checkoutdate = checkout;
-        rateperday = rate;
-        discount = discountRate;
+        if (string.IsNullOrWhiteSpace(name)) throw new ArgumentException("Name is required.", nameof(name));
+        if (string.IsNullOrWhiteSpace(room)) throw new ArgumentException("Room is required.", nameof(room));
+        if (checkout < checkin) throw new ArgumentException("Check-out must be after check-in.");
+        if (rate < 0) throw new ArgumentOutOfRangeException(nameof(rate));
+        if (discountRate < 0) throw new ArgumentOutOfRangeException(nameof(discountRate));
 
-        totaldays = (checkout - checkin).Days;
-        totalamount = totaldays * rateperday;
-        totalamount = totalamount - (totalamount * discount / 100);
+        Guestname = name;
+        RoomNumber = room;
+        CheckinDate = checkin;
+        CheckoutDate = checkout;
+        RatePerDay = rate;
+        Discount = discountRate;
 
-        LogBookingDetailsAsync();
+        TotalDays = (checkout - checkin).Days;
+        TotalAmount = TotalDays * RatePerDay;
+        TotalAmount = TotalAmount - (TotalAmount * Discount / 100);
 
-        Console.WriteLine("Room Booked for " + guestname);
-        Console.WriteLine("Room No: " + roomnumber);
-        Console.WriteLine("Check-In: " + checkindate.ToString());
-        Console.WriteLine("Check-Out: " + checkoutdate.ToString());
-        Console.WriteLine("Total Days: " + totaldays);
-        Console.WriteLine("Amount: " + totalamount);
-    }
+        await LogBookingDetailsAsync();
+
+        Console.WriteLine("Room Booked for " + Guestname);
+        Console.WriteLine("Room No: " + RoomNumber);
+        Console.WriteLine("Check-In: " + CheckinDate.ToString());
+        Console.WriteLine("Check-Out: " + CheckoutDate.ToString());
+        Console.WriteLine("Total Days: " + TotalDays);
+        Console.WriteLine("Amount: " + TotalAmount);
+    } 
 
     public async Task LogBookingDetailsAsync()
     {
@@ -43,13 +51,14 @@ class Booking
 
     public void Cancel()
     {
-        guestname = null;
-        roomnumber = null;
-        checkindate = DateTime.MinValue;
-        checkoutdate = DateTime.MinValue;
-        rateperday = 0;
-        discount = 0;
-        totalamount = 0;
+        Guestname = string.Empty;
+        RoomNumber = string.Empty;
+        CheckinDate = DateTime.MinValue;
+        CheckoutDate = DateTime.MinValue;
+        RatePerDay = 0;
+        Discount = 0;
+        TotalDays = 0;
+        TotalAmount = 0;
 
         Console.WriteLine("Booking cancelled");
     }
@@ -57,10 +66,10 @@ class Booking
 
 public static class AppHost
 {
-    static void Run(string[] args)
+    static async Task Run(string[] args)
     {
         Booking b = new Booking();
-        b.BookRoom("Alice", "101", DateTime.Now, DateTime.Now.AddDays(3), 150.5, 10);
+        await b.BookRoom("Alice", "101", DateTime.Now, DateTime.Now.AddDays(3), 150.5, 10);
         b.Cancel();
     }
 }
