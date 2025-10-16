@@ -1,4 +1,6 @@
-﻿class Program
+﻿using System.Runtime.CompilerServices;
+
+class Program
 {
     static void Main(string[] args)
     {
@@ -26,7 +28,7 @@
 
 public class ItemManager
 {
-    private List<string> items;
+    private readonly List<string> items= new(); //fixed by initialising the list
 
     public void AddItem(string item)
     {
@@ -50,7 +52,7 @@ public class ItemManager
 
     public void ClearAllItems()
     {
-        items = [];
+        items.Clear();
     }
 }
 
