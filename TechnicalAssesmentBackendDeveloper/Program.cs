@@ -22,9 +22,9 @@ class Program
         // Part Three: Introduce a Fruit class and use the ItemManager<Fruit> to add a few fruits and print them on the console.
         // TODO: Implement this part three.
         var fruitManager = new ItemManager<Fruit>();
-        fruitManager.AddItem(new Fruit("Apple",  "Red"));
+        fruitManager.AddItem(new Fruit("Apple", "Red"));
         fruitManager.AddItem(new Fruit("Banana", "Yellow"));
-        fruitManager.AddItem(new Fruit("Grape",  "Purple"));
+        fruitManager.AddItem(new Fruit("Grape", "Purple"));
 
         Console.WriteLine("\nFruits:");
         fruitManager.PrintAllItems();
@@ -34,8 +34,16 @@ class Program
         // TODO: Implement this part four.
     }
 }
+//Define the interface IItemManager<T>
+public interface IItemManager<T>
+{
+    void AddItem(T item);
+    void RemoveItem(T item);
+    void PrintAllItems();
+    void ClearAllItems();
+}
 
-public class ItemManager
+public class ItemManager : IItemManager<string>
 {
     private readonly List<string> items= new(); //fixed by initialising the list
 
@@ -50,6 +58,10 @@ public class ItemManager
         {
             Console.WriteLine(item);
         }
+    }
+     public void ClearAllItems()
+    {
+        items.Clear();
     }
 
     // Part Two: Implement the RemoveItem method
@@ -73,19 +85,20 @@ public class ItemManager
         
     }
 
-    public void ClearAllItems()
-    {
-        items.Clear();
-    }
+   
 }
 
-public class ItemManager<T>
+public class ItemManager<T>: IItemManager<T>
 {
     private readonly List<T> items = new();
 
     public void AddItem(T item)
     {
         items.Add(item);
+    }
+    public void RemoveItem(T item)
+    {
+        items.Remove(item);
     }
 
     public void PrintAllItems()
