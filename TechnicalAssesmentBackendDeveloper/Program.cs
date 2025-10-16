@@ -17,6 +17,7 @@ class Program
 
         // Part Two: Implement the RemoveItem method
         manager.RemoveItem("Apple");
+        manager.PrintAllItems();  //  Print remaining items after removal
 
         // Part Three: Introduce a Fruit class and use the ItemManager<Fruit> to add a few fruits and print them on the console.
         // TODO: Implement this part three.
@@ -45,9 +46,23 @@ public class ItemManager
 
     // Part Two: Implement the RemoveItem method
     // TODO: Implement this method
-    public void RemoveItem(string item)
+    public void RemoveItem(string item) //Fixed Part 2: Implemented the RemoveItem Method
     {
-        throw new NotImplementedException("RemoveItem method is not implemented yet. Please remove this line and implement this method.");
+        if (string.IsNullOrWhiteSpace(item))
+        {
+            Console.WriteLine("Invalid item name.");
+            return;
+        }
+        if (items.Contains(item))
+        {
+            items.Remove(item);
+            Console.WriteLine($"{item} removed successfully.");
+        }
+        else
+        {
+            Console.WriteLine($"{item} not found in the list.");
+        }
+        
     }
 
     public void ClearAllItems()
